@@ -1,3 +1,12 @@
+/*
+
+	Nice simple javascript game just for
+	sake of coding and fun and testing new
+	ideas and things too.
+
+*/
+
+//Variables
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
 var verticalPoints = [];
@@ -28,20 +37,26 @@ heroImage.onload = function() {
 };
 heroImage.src = "hero.png";
 
+//The main hero object (currently stick figure)
 var hero = {
 	speed: 256 // movement in pixels per second
 };
 
+//Setting the startpoint for stickman
 var setStart = function(){
 	hero.x = (canvas.width/2) - 40;
 	hero.y = 380;
 }
 
+
+//Drawing stuff
 var render = function() {
 	//console.log("piirretään");
-    if (bgReady) {
+    //if (bgReady) {
         //ctx.drawImage(bgImage, 0, 0);
-    }
+    //}
+    clearCanvas(ctx);
+    createAndDrawObjects();
 
     if (heroReady) {
     	//console.log("hero")
@@ -170,11 +185,9 @@ var clearCanvas = function(ctx){
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.restore();
+}
 
-	// ctx.beginPath();
-	// ctx.moveTo(800-hero.x,100);
-	// ctx.lineTo(10000-hero.x,100);
-	// ctx.stroke();
+var createAndDrawObjects = function(){
 	var test = new collisionHorizontalPoint(0,1000,100,100);
 	test.drawPath();
 
@@ -194,8 +207,6 @@ var clearCanvas = function(ctx){
 
 	//console.log(checkCollisionsFromArray(points,hero.x,hero.y));
 	console.log(hero.x + ", " + hero.y);
-
-	
 }
 
 var main = function() {
@@ -205,7 +216,7 @@ var main = function() {
     update(delta / 1000);
     checkForGravity();
 
-    clearCanvas(ctx);
+    //clearCanvas(ctx);
 
     render();
     then = now;
