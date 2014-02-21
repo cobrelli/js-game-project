@@ -1,6 +1,7 @@
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
-var points = [];
+var verticalPoints = [];
+var horizontalPoints = [];
 var jumpCounter = 0;
 var jumpLimit = false;
 var jumpStarted = false;
@@ -62,12 +63,12 @@ var update = function(modifier) {
     if (40 in keysDown) { // Player holding down
         hero.y += hero.speed * modifier;
     }*/
-    if (37 in keysDown && !checkCollisionsFromArray(points,hero.x-(hero.speed*modifier),hero.y)) { // Player holding left
+    if (37 in keysDown && !checkCollisionsFromArray(verticalPoints,hero.x-(hero.speed*modifier),hero.y)) { // Player holding left
         hero.x -= hero.speed * modifier;
         heroImage.src = "hero2.png";
         facingRight = false;
     }
-    if (39 in keysDown && !checkCollisionsFromArray(points,hero.x+(hero.speed*modifier),hero.y)) { // Player holding right
+    if (39 in keysDown && !checkCollisionsFromArray(verticalPoints,hero.x+(hero.speed*modifier),hero.y)) { // Player holding right
         hero.x += hero.speed * modifier;
         heroImage.src = "hero.png";
         facingRight = true;
@@ -86,7 +87,13 @@ addEventListener("keyup", function(e) {
 }, false);
 
 var checkForGravity = function(){
-	if(hero.y<380 && hero.y<=380){
+	if(checkCollisionsFromArray(horizontalPoints,hero.x,hero.y)){
+		jumpLimit = 0;
+		jumpCounter = false;
+		jumpStarted = false;
+		return false;
+	}
+	if(hero.y<=380){
 		hero.y+=15;
 	}
 	if(hero.y>380){
@@ -108,7 +115,33 @@ function checkCollisionsFromArray(arr,x,y){
 	return false;
 }
 
-function collisionPoint(x1,x2,y1,y2){
+function collisionHorizontalPoint(x1,x2,y1,y2){
+	this.x1 = x1;
+	this.x2 = x2;
+	this.y1 = y1;
+	this.y2 = y2;
+
+	this.checkCollision = function(x,y){
+		//console.log("y: " + y);
+		//console.log(y1);
+		if(y1+1>y && y>y1-110){
+			//return true;
+			if(x>x1 && x<x2){
+				return true;	
+			}
+		}
+		return false;
+	}
+
+	this.drawPath = function(){
+		ctx.beginPath();
+		ctx.moveTo(x1-hero.x+400,y1);
+		ctx.lineTo(x2-hero.x+400,y2);
+		ctx.stroke();
+	}
+}
+
+function collisionVerticalPoint(x1,x2,y1,y2){
 	this.x1 = x1;
 	this.x2 = x2;
 	this.y1 = y1;
@@ -119,7 +152,6 @@ function collisionPoint(x1,x2,y1,y2){
 			if(y>y1 && y<y2){
 				return true;	
 			}
-			
 		}
 		return false;
 	}
@@ -143,21 +175,25 @@ var clearCanvas = function(ctx){
 	// ctx.moveTo(800-hero.x,100);
 	// ctx.lineTo(10000-hero.x,100);
 	// ctx.stroke();
-	var test = new collisionPoint(0,1000,100,100);
+	var test = new collisionHorizontalPoint(0,1000,100,100);
 	test.drawPath();
 
-	var cp = new collisionPoint(0,0,0,480);
+	var test2 = new collisionHorizontalPoint(700,1000,400,400);
+	test2.drawPath();
+
+	var cp = new collisionVerticalPoint(0,0,0,480);
 	cp.drawPath();
-	var cp2 = new collisionPoint(500,500,0,280);
+	var cp2 = new collisionVerticalPoint(500,500,0,280);
 	cp2.drawPath();
 	//console.log(cp.checkCollision(hero.x,hero.y));
 	
-	points.push(test);
-	points.push(cp);
-	points.push(cp2);
+	horizontalPoints.push(test);
+	horizontalPoints.push(test2);
+	verticalPoints.push(cp);
+	verticalPoints.push(cp2);
 
-	console.log(checkCollisionsFromArray(points,hero.x,hero.y));
-	console.log(hero.x)
+	//console.log(checkCollisionsFromArray(points,hero.x,hero.y));
+	console.log(hero.x + ", " + hero.y);
 
 	
 }
