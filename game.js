@@ -124,7 +124,7 @@ function collisionHorizontalPoint(x1,x2,y1,y2){
 	this.checkCollision = function(x,y){
 		//console.log("y: " + y);
 		//console.log(y1);
-		if(y1+1>y && y>y1-110){
+		if(y1-90>y && y>y1-110){
 			//return true;
 			if(x>x1 && x<x2){
 				return true;	
